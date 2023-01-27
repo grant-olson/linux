@@ -1,3 +1,12 @@
+# Pine64 Ox64 patches
+
+This fork contains branches that are patched with all the patches from
+the [openbouffalo/buildroot_bouffalo
+repository](https://github.com/openbouffalo/buildroot_bouffalo)
+to make it easier to generate additional patches.
+
+Branches will have names like `v6.2-rc5-ox64`.
+
 Linux kernel
 ============
 
