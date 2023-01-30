@@ -121,5 +121,10 @@
                 	                      <&cpu0_intc 7>;
 	        };
 
+                wdt: wdt@2000a500 {
+                        compatible = "bflb,bflb808-wdt";
+                        reg = <0x2000a500 0x100>;
+                        status = "disabled";
+                };
 	};
 };
