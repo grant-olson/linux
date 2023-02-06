@@ -56,3 +56,7 @@
 &enet0 {
 	status = "okay";
 };
+
+&wdt {
+     status = "okay";
+};
