@@ -104,8 +104,7 @@
 						       BFLB_IPC_DEVICE_USB
 						       IRQ_TYPE_EDGE_RISING>;
 			clocks = <&xtal>;
-			mboxes = <&ipclic BFLB_IPC_SOURCE_M0 BFLB_IPC_DEVICE_USB>;
-			dr_mode = "peripheral";
+			dr_mode = "host";
 			status = "disabled";
 		};
 
