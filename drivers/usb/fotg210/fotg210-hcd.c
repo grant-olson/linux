@@ -5541,8 +5541,15 @@ static void fotg210_init(struct fotg210_hcd *fotg210)
 {
 	u32 value;
 
+#ifdef SOC_BOUFFALOLAB
+	/* Don't mess with interrupt polarity on BL808, since we actually
+	 receive a virtual interrupt since the USB is on a different core */
+
+	iowrite32(GMIR_MDEV_INT | GMIR_MOTG_INT, &fotg210->regs->gmir);
+#else
 	iowrite32(GMIR_MDEV_INT | GMIR_MOTG_INT | GMIR_INT_POLARITY,
 			&fotg210->regs->gmir);
+#endif
 
 	value = ioread32(&fotg210->regs->otgcsr);
 	value &= ~OTGCSR_A_BUS_DROP;

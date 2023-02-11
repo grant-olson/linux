@@ -1036,9 +1036,16 @@ static void fotg210_init(struct fotg210_udc *fotg210)
 {
 	u32 value;
 
-	/* disable global interrupt and set int polarity to active high */
+	/* disable global interrupt */
+#ifdef CONFIG_SOC_BOUFFALOLAB
+	/* Don't mess with interrupt polarity on BL808, since we actually
+	 receive a virtual interrupt since the USB is on a different core */
+	iowrite32(GMIR_MHC_INT | GMIR_MOTG_INT, fotg210->reg + FOTG210_GMIR);
+#else
+	/*and set int polarity to active high */
 	iowrite32(GMIR_MHC_INT | GMIR_MOTG_INT | GMIR_INT_POLARITY,
 		  fotg210->reg + FOTG210_GMIR);
+#endif
 
 	/* disable device global interrupt */
 	value = ioread32(fotg210->reg + FOTG210_DMCR);
