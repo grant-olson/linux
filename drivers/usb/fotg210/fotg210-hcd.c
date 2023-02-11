@@ -5541,7 +5541,7 @@ static void fotg210_init(struct fotg210_hcd *fotg210)
 {
 	u32 value;
 
-#ifdef SOC_BOUFFALOLAB
+#ifdef CONFIG_SOC_BOUFFALOLAB
 	/* Don't mess with interrupt polarity on BL808, since we actually
 	 receive a virtual interrupt since the USB is on a different core */
 
