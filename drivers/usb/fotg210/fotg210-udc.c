@@ -874,6 +874,12 @@ static irqreturn_t fotg210_irq(int irq, void *_fotg210)
 
 	int_grp &= ~int_msk;
 
+	// We got an interrupt, but none of the interrupt
+	// group registers are set, so it's bad.
+	if (!int_grp) {
+		return IRQ_NONE;
+	}
+
 	spin_lock(&fotg210->lock);
 
 	if (int_grp & DIGR_INT_G2) {
