@@ -1057,6 +1057,25 @@ static void fotg210_init(struct fotg210_udc *fotg210)
 	value &= ~DMCR_GLINT_EN;
 	iowrite32(value, fotg210->reg + FOTG210_DMCR);
 
+	/* Disable A Mode */
+	value = ioread32(fotg210->reg + FOTG210_OTGCSR);
+	value &= ~OTGCSR_A_BUS_REQ;
+	value |= OTGCSR_A_BUS_DROP;
+	iowrite32(value, fotg210->reg + FOTG210_OTGCSR);
+
+	/* Enable B Mode */
+	value = ioread32(fotg210->reg + FOTG210_OTGCSR);
+	value |= OTGCSR_B_BUS_REQ;
+	iowrite32(value, fotg210->reg + FOTG210_OTGCSR);
+
+	value = ioread32(fotg210->reg + FOTG210_OTGCSR);
+
+	if (value & OTGCSR_CROLE) {
+		pr_debug("B ROLE (%x)\n", value);
+	} else {
+		pr_debug("A_ROLE (%x)\n", value);
+	}
+
 	/* enable only grp2 irqs we handle */
 	iowrite32(~(DISGR2_DMA_ERROR | DISGR2_RX0BYTE_INT | DISGR2_TX0BYTE_INT
 		    | DISGR2_ISO_SEQ_ABORT_INT | DISGR2_ISO_SEQ_ERR_INT

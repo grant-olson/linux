@@ -11,6 +11,14 @@
 #define FOTG210_MAX_NUM_EP	5 /* ep0...ep4 */
 #define FOTG210_MAX_FIFO_NUM	4 /* fifo0...fifo4 */
 
+/* Device OTG CSR Register(0x080) */
+#define FOTG210_OTGCSR 0x80
+#define OTGCSR_B_BUS_REQ (1 << 0)
+#define OTGCSR_A_BUS_REQ (1 << 4)
+#define OTGCSR_A_BUS_DROP (1 << 5)
+#define OTGCSR_CROLE (1 << 20)
+#define OTGCSR_ID (1 << 21)
+
 /* Global Mask of HC/OTG/DEV interrupt Register(0xC4) */
 #define FOTG210_GMIR		0xC4
 #define GMIR_INT_POLARITY	0x8 /*Active High*/
