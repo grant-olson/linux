@@ -1029,6 +1029,18 @@ static int fotg210_udc_start(struct usb_gadget *g,
 			dev_err(fotg210->dev, "can't bind to phy\n");
 	}
 
+	/* software reset */
+	value = ioread32(fotg210->reg + FOTG210_DMCR);
+	value |= DMCR_SFRST;
+	iowrite32(value, fotg210->reg + FOTG210_DMCR);
+
+	mdelay(10);
+
+	value = ioread32(fotg210->reg + FOTG210_DAR);
+	value |= DAR_AFT_CONF;
+	iowrite32(value, fotg210->reg + FOTG210_DAR);
+
+	
 	/* enable device global interrupt */
 	value = ioread32(fotg210->reg + FOTG210_DMCR);
 	value |= DMCR_GLINT_EN;
