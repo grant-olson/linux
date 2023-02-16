@@ -56,7 +56,7 @@
 	status = "okay";
 };
 
-&ehci0 {
+&usb0 {
 	status = "okay";
 };
 

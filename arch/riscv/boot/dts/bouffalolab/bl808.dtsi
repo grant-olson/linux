@@ -97,8 +97,8 @@
 			status = "disabled";
 		};
 
-		ehci0: usb@20072000 {
-			compatible = "generic-ehci";
+		usb0: usb@20072000 {
+			compatible = "faraday,fotg210_hcd";
 			reg = <0x20072000 0x1000>;
 			interrupts-extended = <&ipclic BFLB_IPC_SOURCE_M0
 						       BFLB_IPC_DEVICE_USB
