@@ -22,6 +22,16 @@
 
 #define	DRIVER_DESC	"FOTG210 USB Device Controller Driver"
 
+/*
+ * Test Mode Selectors
+ * See USB 2.0 spec Table 9-7
+ */
+#define	TEST_J		1
+#define	TEST_K		2
+#define	TEST_SE0_NAK	3
+#define	TEST_PACKET		4
+#define	TEST_FORCE_EN	5
+
 /* Note: CONFIG_USB_FOTG210_UDC_DOUBLE_FIFO usage
  * EP1 = FIFO 0~1, EP2 = FIFO 2~3
  * Please note that FIFO number is from 0~3, if user has configured EP numbers more than 2,
