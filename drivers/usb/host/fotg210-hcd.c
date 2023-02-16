@@ -55,6 +55,16 @@ static const char hcd_name[] = "fotg210_hcd";
 #undef FOTG210_URB_TRACE
 #define FOTG210_STATS
 
+/*
+ * Test Mode Selectors
+ * See USB 2.0 spec Table 9-7
+ */
+#define	TEST_J		1
+#define	TEST_K		2
+#define	TEST_SE0_NAK	3
+#define	TEST_PACKET		4
+#define	TEST_FORCE_ENABLE	5
+
 /* magic numbers that can affect system performance */
 #define FOTG210_TUNE_CERR	3 /* 0-3 qtd retries; 0 == don't stop */
 #define FOTG210_TUNE_RL_HS	4 /* nak throttle; see 4.9 */
@@ -3142,7 +3152,7 @@ static struct list_head *qh_urb_transaction(struct fotg210_hcd *fotg210,
 		token |= (1 /* "in" */ << 8);
 	/* else it's already initted to "out" pid (0 << 8) */
 
-	maxpacket = max_packet(usb_maxpacket(urb->dev, urb->pipe, !is_input));
+	maxpacket = max_packet(usb_maxpacket(urb->dev, urb->pipe));
 
 	/*
 	 * buffer gets wrapped in one or more qtds;
@@ -3273,7 +3283,7 @@ static struct fotg210_qh *qh_make(struct fotg210_hcd *fotg210, struct urb *urb,
 
 	is_input = usb_pipein(urb->pipe);
 	type = usb_pipetype(urb->pipe);
-	maxp = usb_maxpacket(urb->dev, urb->pipe, !is_input);
+	maxp = usb_maxpacket(urb->dev, urb->pipe);
 
 	/* 1024 byte maxpacket is a hardware ceiling.  High bandwidth
 	 * acts like up to 3KB, but is built from smaller packets.
@@ -4523,7 +4533,7 @@ static void iso_stream_init(struct fotg210_hcd *fotg210,
 	 */
 	epnum = usb_pipeendpoint(pipe);
 	is_input = usb_pipein(pipe) ? USB_DIR_IN : 0;
-	maxp = usb_maxpacket(dev, pipe, !is_input);
+	maxp = usb_maxpacket(dev, pipe);
 	if (is_input)
 		buf1 = (1 << 11);
 	else
@@ -6120,7 +6130,7 @@ static int hcd_fotg210_init(struct usb_hcd *hcd)
 	fotg210->command = temp;
 
 	/* Accept arbitrarily long scatter-gather lists */
-	if (!(hcd->driver->flags & HCD_LOCAL_MEM))
+	if (!hcd->localmem_pool)
 		hcd->self.sg_tablesize = ~0;
 	return 0;
 }
@@ -6862,14 +6872,9 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
 
 	pdev->dev.power.power_state = PMSG_ON;
 
-	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-	if (!res) {
-		dev_err(dev, "Found HC with no IRQ. Check %s setup!\n",
-				dev_name(dev));
-		return -ENODEV;
-	}
-
-	irq = res->start;
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0)
+		return irq;
 
 	hcd = usb_create_hcd(&fotg210_fotg210_hc_driver, dev,
 			dev_name(dev));
