@@ -56,7 +56,7 @@
 	status = "okay";
 };
 
-&usb0 {
+&usb1 {
 	status = "okay";
 };
 

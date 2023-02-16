@@ -97,8 +97,18 @@
 			status = "disabled";
 		};
 
-		usb0: usb@20072000 {
+		usb0: usb_hdc@20072000 {
 			compatible = "faraday,fotg210_hcd";
+			reg = <0x20072000 0x1000>;
+			interrupts-extended = <&ipclic BFLB_IPC_SOURCE_M0
+						       BFLB_IPC_DEVICE_USB
+						       IRQ_TYPE_EDGE_RISING>;
+			clocks = <&xtal>;
+			status = "disabled";
+		};
+
+		usb1: usb_udc@20072000 {
+			compatible = "faraday,fotg210_udc";
 			reg = <0x20072000 0x1000>;
 			interrupts-extended = <&ipclic BFLB_IPC_SOURCE_M0
 						       BFLB_IPC_DEVICE_USB
