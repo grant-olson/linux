@@ -22,6 +22,16 @@
 
 #define	DRIVER_DESC	"FOTG210 USB Device Controller Driver"
 
+/*
+ * Test Mode Selectors
+ * See USB 2.0 spec Table 9-7
+ */
+#define	TEST_J		1
+#define	TEST_K		2
+#define	TEST_SE0_NAK	3
+#define	TEST_PACKET		4
+#define	TEST_FORCE_EN	5
+
 /* Note: CONFIG_USB_FOTG210_UDC_DOUBLE_FIFO usage
  * EP1 = FIFO 0~1, EP2 = FIFO 2~3
  * Please note that FIFO number is from 0~3, if user has configured EP numbers more than 2,
@@ -2042,7 +2052,6 @@ static int fotg210_udc_start(struct usb_gadget *g,
 #endif
 
 	/* hook up the driver */
-	driver->driver.bus = NULL;
 	fotg210->driver = driver;
 
 #ifdef CONFIG_USB_FOTG210_OTG
@@ -2170,11 +2179,11 @@ static int fotg210_udc_remove(struct platform_device *pdev)
 
 static int fotg210_udc_probe(struct platform_device *pdev)
 {
-	struct resource *res, *ires;
+	struct resource *res;
 	struct fotg210_udc *fotg210 = NULL;
 	struct fotg210_ep *_ep[FOTG210_MAX_NUM_EP];
 	int ret = 0;
-	int i;
+	int i, irq;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
@@ -2182,9 +2191,9 @@ static int fotg210_udc_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
-	ires = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-	if (!ires) {
-		pr_err("platform_get_resource IORESOURCE_IRQ error.\n");
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0) {
+		pr_err("Couldn't get IRQ.\n");
 		return -ENODEV;
 	}
 
@@ -2255,7 +2264,7 @@ static int fotg210_udc_probe(struct platform_device *pdev)
 
 	fotg210_init(fotg210);
 
-	ret = request_irq(ires->start, fotg210_irq, IRQF_SHARED,
+	ret = request_irq(irq, fotg210_irq, IRQF_SHARED,
 			  udc_name, fotg210);
 	if (ret < 0) {
 		pr_err("request_irq error (%d)\n", ret);
@@ -2284,7 +2293,7 @@ static int fotg210_udc_probe(struct platform_device *pdev)
 	return 0;
 
 err_add_udc:
-	free_irq(ires->start, fotg210);
+	free_irq(irq, fotg210);
 
 err_req:
 	fotg210_ep_free_request(&fotg210->ep[0]->ep, fotg210->ep0_req);
