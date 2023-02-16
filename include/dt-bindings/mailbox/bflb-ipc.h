@@ -13,5 +13,7 @@
 /* Peripheral device ID */
 #define BFLB_IPC_DEVICE_SDHCI		0
 #define BFLB_IPC_DEVICE_UART2		1
+#define BFLB_IPC_DEVICE_USB		2
+#define BFLB_IPC_DEVICE_EMAC		3
 
 #endif
