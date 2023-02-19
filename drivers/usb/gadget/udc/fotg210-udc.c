@@ -2052,7 +2052,6 @@ static int fotg210_udc_start(struct usb_gadget *g,
 #endif
 
 	/* hook up the driver */
-	driver->driver.bus = NULL;
 	fotg210->driver = driver;
 
 #ifdef CONFIG_USB_FOTG210_OTG
