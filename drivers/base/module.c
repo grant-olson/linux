@@ -13,6 +13,16 @@ static char *make_driver_name(struct device_driver *drv)
 {
 	char *driver_name;
 
+	if (!drv->name) {
+		printk("Couldn't make_driver_name! Unknown Driver had NULL name\n");
+		return NULL;
+	}
+
+	if (!drv->bus) {
+		printk("Couldn't make_driver_name! Driver %s had NULL bus\n", drv->name);
+		return NULL;
+	}
+
 	driver_name = kasprintf(GFP_KERNEL, "%s:%s", drv->bus->name, drv->name);
 	if (!driver_name)
 		return NULL;
