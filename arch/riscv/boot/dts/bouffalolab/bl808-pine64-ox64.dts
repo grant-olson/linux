@@ -62,3 +62,11 @@
 &ipclic {
 	status = "okay";
 };
+
+&usb1 {
+	status = "okay";
+};
+
+&enet0 {
+	status = "okay";
+};
